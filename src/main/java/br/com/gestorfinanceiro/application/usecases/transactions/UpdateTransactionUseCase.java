@@ -5,6 +5,7 @@ import br.com.gestorfinanceiro.application.exceptions.transactions.TransactionNo
 import br.com.gestorfinanceiro.application.repositories.transactions.TransactionRepositoryInterface;
 import br.com.gestorfinanceiro.domain.entities.Transaction;
 
+import java.sql.SQLException;
 import java.util.Optional;
 
 
@@ -16,7 +17,7 @@ public class UpdateTransactionUseCase {
     }
 
 
-    public void handle(UpdateTransactionDto dto){
+    public void handle(UpdateTransactionDto dto) throws SQLException {
         Optional<Transaction> transaction = this.repository.getByUuid(dto.getUuid());
         if (transaction.isEmpty()){
             throw new TransactionNotFoundException(dto.getUuid().toString());

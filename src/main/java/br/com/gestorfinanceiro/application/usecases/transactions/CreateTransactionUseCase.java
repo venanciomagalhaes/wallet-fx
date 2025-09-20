@@ -4,6 +4,8 @@ import br.com.gestorfinanceiro.application.dtos.transactions.CreateTransactionDt
 import br.com.gestorfinanceiro.application.repositories.transactions.TransactionRepositoryInterface;
 import br.com.gestorfinanceiro.domain.entities.Transaction;
 
+import java.sql.SQLException;
+
 public class CreateTransactionUseCase {
 
     private final TransactionRepositoryInterface repository;
@@ -12,13 +14,7 @@ public class CreateTransactionUseCase {
         this.repository = repository;
     }
 
-    public void handle(CreateTransactionDto dto){
-        Transaction transaction = new Transaction(
-                dto.getName(),
-                dto.getValue(),
-                dto.isInstallments(),
-                dto.getRemainingInstallments()
-        );
+    public void handle(CreateTransactionDto dto) throws SQLException {
         this.repository.create(dto);
     }
 
