@@ -71,7 +71,7 @@ Este é o **WalletFX**, um aplicativo desktop que desenvolvi em **Java 21** com 
 src/main/java/br/com/walletfx
 ├── application
 │   ├── dtos
-		├── exceptions
+    ├── exceptions
 │   ├── repositories
 │   └── usecases
 ├── domain
