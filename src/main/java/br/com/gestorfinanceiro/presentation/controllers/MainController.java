@@ -133,10 +133,8 @@ public class MainController implements Initializable {
             this.bindTotalToTextField();
             this.updateTransactionsDataTable();
         } catch (SQLException e) {
-            e.printStackTrace();
             showAlert(MSG_TITLE_ERROR, MSG_HEADER_ERROR, MSG_CONTENT_DB_ERROR, Alert.AlertType.ERROR);
         } catch (Exception e) {
-            e.printStackTrace();
             showAlert(MSG_TITLE_ERROR, MSG_HEADER_ERROR, MSG_CONTENT_TRY_AGAIN, Alert.AlertType.ERROR);
         }
     }
@@ -167,7 +165,7 @@ public class MainController implements Initializable {
             @Override
             protected void updateItem(BigDecimal item, boolean empty) {
                 super.updateItem(item, empty);
-                setText((empty || item == null) ? null : "R$ " + item.setScale(2, BigDecimal.ROUND_HALF_UP).toString().replace(".", ","));
+                setText((empty || item == null) ? null : "R$ " + item.setScale(2, RoundingMode.HALF_UP).toString().replace(".", ","));
             }
         });
         columnIsInstallment.setCellValueFactory(new PropertyValueFactory<>("installments"));
@@ -364,7 +362,6 @@ public class MainController implements Initializable {
         } catch (InvalidArgumentException e) {
             showAlert(MSG_ERROR, MSG_TITLE_ERROR, e.getMessage(), Alert.AlertType.ERROR);
         }catch (Exception e) {
-            e.printStackTrace();
             showAlert(MSG_ERROR, MSG_HEADER_ERROR, MSG_CONTENT_TRY_AGAIN, Alert.AlertType.ERROR);
         }
     }
@@ -441,7 +438,7 @@ public class MainController implements Initializable {
         }
     }
 
-    public void getTransactionsBetween() throws SQLException {
+    public void getTransactionsBetween()  {
         try {
             validateField(initialDate.getValue() == null, MSG_INVALID_DATE_HEADER, MSG_INVALID_INITIAL_DATE_CONTENT);
             validateField(finalDate.getValue() == null, MSG_INVALID_DATE_HEADER, MSG_INVALID_FINAL_DATE_CONTENT);
@@ -459,7 +456,6 @@ public class MainController implements Initializable {
         } catch (InvalidArgumentException e) {
             showAlert(MSG_ERROR, MSG_TITLE_ERROR, e.getMessage(), Alert.AlertType.ERROR);
         }catch (Exception e) {
-            e.printStackTrace();
             showAlert(MSG_ERROR, MSG_HEADER_ERROR, MSG_CONTENT_TRY_AGAIN, Alert.AlertType.ERROR);
         }
 

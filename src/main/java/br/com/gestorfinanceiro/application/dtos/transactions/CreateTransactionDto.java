@@ -5,11 +5,11 @@ import java.time.LocalDate;
 
 public class CreateTransactionDto {
 
-    private String name;
-    private BigDecimal value;
-    private  LocalDate date;
-    private boolean isInstallments;
-    private Integer remainingInstallments;
+    private final String name;
+    private final BigDecimal value;
+    private final LocalDate date;
+    private final boolean isInstallments;
+    private final Integer remainingInstallments;
 
     public CreateTransactionDto(
             String name,

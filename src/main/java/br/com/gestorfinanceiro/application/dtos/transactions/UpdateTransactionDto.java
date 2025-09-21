@@ -7,12 +7,12 @@ import java.util.UUID;
 public class UpdateTransactionDto {
 
     private Long id;
-    private UUID uuid;
-    private String name;
-    private BigDecimal value;
-    private  LocalDate date;
-    private boolean isInstallments;
-    private Integer remainingInstallments;
+    private final UUID uuid;
+    private final String name;
+    private final BigDecimal value;
+    private final LocalDate date;
+    private final boolean isInstallments;
+    private final Integer remainingInstallments;
 
     public UpdateTransactionDto(
             Long id,
