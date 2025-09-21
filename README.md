@@ -75,8 +75,8 @@ src/main/java/br/com/walletfx
 │   ├── repositories
 │   └── usecases
 ├── domain
-│   └── entities
-		├── exceptions
+│   ├── entities
+	├── exceptions
 ├── infrastructure
 │   ├── database/
 		|──── DatabaseConnection.java
