@@ -19,6 +19,7 @@ public class Migrations {
                 "uuid TEXT NOT NULL UNIQUE, " +
                 "name TEXT NOT NULL, " +
                 "value REAL NOT NULL, " +
+                "date TIMESTAMP NOT NULL, " +
                 "is_installments INTEGER NOT NULL, " +
                 "remaining_installments INTEGER DEFAULT 0, " +
                 "created_at TEXT DEFAULT CURRENT_TIMESTAMP, " +

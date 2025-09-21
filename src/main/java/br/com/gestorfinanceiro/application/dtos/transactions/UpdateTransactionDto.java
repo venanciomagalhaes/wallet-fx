@@ -1,6 +1,7 @@
 package br.com.gestorfinanceiro.application.dtos.transactions;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.UUID;
 
 public class UpdateTransactionDto {
@@ -9,6 +10,7 @@ public class UpdateTransactionDto {
     private UUID uuid;
     private String name;
     private BigDecimal value;
+    private  LocalDate date;
     private boolean isInstallments;
     private Integer remainingInstallments;
 
@@ -16,7 +18,7 @@ public class UpdateTransactionDto {
             Long id,
             UUID uuid,
             String name,
-            BigDecimal value,
+            BigDecimal value, LocalDate data,
             boolean isInstallments,
             Integer remainingInstallments
     ) {
@@ -24,8 +26,18 @@ public class UpdateTransactionDto {
         this.uuid = uuid;
         this.name = name;
         this.value = value;
+        this.date = data;
         this.isInstallments = isInstallments;
         this.remainingInstallments = remainingInstallments;
+    }
+
+    public UpdateTransactionDto(UUID uuid, String name, BigDecimal value, LocalDate data, boolean isInstallment, int remaining) {
+        this.uuid = uuid;
+        this.name = name;
+        this.value = value;
+        this.date = data;
+        this.isInstallments = isInstallment;
+        this.remainingInstallments = remaining;
     }
 
     public Long getId() {
@@ -50,5 +62,9 @@ public class UpdateTransactionDto {
 
     public Integer getRemainingInstallments() {
         return remainingInstallments;
+    }
+
+    public LocalDate getDate() {
+        return date;
     }
 }

@@ -15,7 +15,7 @@ public class DatabaseConnection {
     private DatabaseConnection() {}
 
     private static void setCredentials() throws IOException {
-        InputStream input = DatabaseConnection.class.getResourceAsStream("/br/com/gestorfinanceiro/db.properties") ;
+        InputStream input = DatabaseConnection.class.getResourceAsStream("/br/com/gestorfinanceiro/database/db.properties") ;
         Properties prop = new Properties();
         prop.load(input);
         URL = prop.getProperty("db.url");
