@@ -23,6 +23,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
@@ -36,10 +37,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Locale;
-import java.util.ResourceBundle;
-import java.util.UUID;
+import java.util.*;
 
 public class MainController implements Initializable {
 
@@ -261,11 +259,18 @@ public class MainController implements Initializable {
         alert.setTitle(MSG_DELETE_CONFIRM_TITLE);
         alert.setHeaderText(MSG_DELETE_CONFIRM_HEADER);
         alert.setContentText(MSG_DELETE_CONFIRM_CONTENT + transaction.getName());
+
+        Stage alertStage = (Stage) alert.getDialogPane().getScene().getWindow();
+        alertStage.getIcons().add(new Image(Objects.requireNonNull(
+                getClass().getResourceAsStream("/br/com/walletfx/icons/cifrao.png")
+        )));
+
         alert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
                 deleteTransaction(transaction);
             }
         });
+
     }
 
     private void deleteTransaction(Transaction transaction) {
@@ -282,6 +287,11 @@ public class MainController implements Initializable {
         try {
             Stage stage = new Stage();
             stage.setTitle(TITLE_EDIT_TRANSACTION);
+            stage.setMinWidth(400);
+            Image icon = new Image(Objects.requireNonNull(
+                    getClass().getResourceAsStream("/br/com/walletfx/icons/cifrao.png")
+            ));
+            stage.getIcons().add(icon);
             stage.initModality(Modality.APPLICATION_MODAL);
 
             TextField editNameField = new TextField(transaction.getName());
@@ -343,6 +353,11 @@ public class MainController implements Initializable {
         try {
             Stage stage = new Stage();
             stage.setTitle(TITLE_COPY_TRANSACTION);
+            stage.setMinWidth(400);
+            Image icon = new Image(Objects.requireNonNull(
+                    getClass().getResourceAsStream("/br/com/walletfx/icons/cifrao.png")
+            ));
+            stage.getIcons().add(icon);
             stage.initModality(Modality.APPLICATION_MODAL);
 
             TextField copyNameField = new TextField(transaction.getName());
@@ -462,6 +477,10 @@ public class MainController implements Initializable {
         alert.setTitle(title);
         alert.setHeaderText(header);
         alert.setContentText(content);
+        Stage alertStage = (Stage) alert.getDialogPane().getScene().getWindow();
+        alertStage.getIcons().add(new Image(Objects.requireNonNull(
+                getClass().getResourceAsStream("/br/com/walletfx/icons/cifrao.png")
+        )));
         alert.showAndWait();
     }
 
