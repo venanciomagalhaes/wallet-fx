@@ -47,7 +47,9 @@ public class MainController implements Initializable {
     private static final String MSG_SUCCESS_CREATE_HEADER = "Transação criada";
     private static final String MSG_SUCCESS_CREATE_CONTENT = "A transação foi criada com sucesso.";
     private static final String MSG_SUCCESS_UPDATE_HEADER = "Transação atualizada";
+    private static final String MSG_SUCCESS_COPY_HEADER = "Transação copiada";
     private static final String MSG_SUCCESS_UPDATE_CONTENT = "A transação foi atualizada com sucesso.";
+    private static final String MSG_SUCCESS_COPY_CONTENT = "A transação foi copiada com sucesso.";
     private static final String MSG_SUCCESS_DELETE_HEADER = "Transação excluída";
     private static final String MSG_SUCCESS_DELETE_CONTENT = "A transação foi removida com sucesso.";
     private static final String MSG_ERROR = "Erro";
@@ -55,6 +57,7 @@ public class MainController implements Initializable {
     private static final String MSG_CONTENT_TRY_AGAIN = "Por favor, verifique os dados e tente novamente.";
     private static final String MSG_ERROR_OPEN_MODAL_HEADER = "Falha ao abrir o modal";
     private static final String MSG_ERROR_UPDATE_HEADER = "Falha ao atualizar";
+    private static final String MSG_ERROR_COPY_HEADER = "Falha ao copiar";
     private static final String MSG_ERROR_DELETE_HEADER = "Falha ao excluir";
     private static final String MSG_DELETE_CONFIRM_TITLE = "Confirmar exclusão";
     private static final String MSG_DELETE_CONFIRM_HEADER = "Deseja realmente excluir esta transação?";
@@ -77,9 +80,11 @@ public class MainController implements Initializable {
     private static final String MSG_BUTTON_SAVE = "Salvar";
     private static final String MSG_BUTTON_EDIT = "Editar";
     private static final String MSG_BUTTON_DELETE = "Excluir";
+    private static final String MSG_BUTTON_COPY = "Copiar";
     private static final String YES = "Sim";
     private static final String NO = "Não";
     private static final String TITLE_EDIT_TRANSACTION = "Editar Transação";
+    private static final String TITLE_COPY_TRANSACTION = "Copiar Transação";
     private static final String MSG_TITLE_ERROR = "Ops";
     private static final String MSG_CONTENT_DB_ERROR = "Verifique a conexão com o banco de dados.";
     private static final String DATE_PATTERN = "dd/MM/yyyy";
@@ -233,11 +238,13 @@ public class MainController implements Initializable {
         columnActions.setCellFactory(col -> new TableCell<>() {
             private final Button editButton = new Button(MSG_BUTTON_EDIT);
             private final Button deleteButton = new Button(MSG_BUTTON_DELETE);
-            private final HBox container = new HBox(5, editButton, deleteButton);
+            private final Button copyButton = new Button(MSG_BUTTON_COPY);
+            private final HBox container = new HBox(5, editButton, deleteButton, copyButton);
 
             {
                 container.setAlignment(Pos.CENTER);
                 editButton.setOnAction(event -> openEditModal(getTableView().getItems().get(getIndex())));
+                copyButton.setOnAction(event -> openCopyModal(getTableView().getItems().get(getIndex())));
                 deleteButton.setOnAction(event -> showDeleteConfirmation(getTableView().getItems().get(getIndex())));
             }
 
@@ -330,6 +337,68 @@ public class MainController implements Initializable {
             showAlert(MSG_ERROR, MSG_ERROR_OPEN_MODAL_HEADER, e.getMessage(), Alert.AlertType.ERROR);
         }
     }
+
+
+    private void openCopyModal(Transaction transaction) {
+        try {
+            Stage stage = new Stage();
+            stage.setTitle(TITLE_COPY_TRANSACTION);
+            stage.initModality(Modality.APPLICATION_MODAL);
+
+            TextField copyNameField = new TextField(transaction.getName());
+            TextField copyValueField = new TextField(transaction.getValue().toString());
+            DatePicker copyDatePicker = new DatePicker(transaction.getDate());
+            ChoiceBox<String> copyIsInstallmentChoice = new ChoiceBox<>();
+            copyIsInstallmentChoice.getItems().addAll(YES, NO);
+            copyIsInstallmentChoice.setValue(transaction.isInstallments() ? YES : NO);
+            TextField copyRemainingInstallments = new TextField(String.valueOf(transaction.getRemainingInstallments()));
+
+            Button copyButton = new Button(MSG_BUTTON_COPY);
+            copyButton.setOnAction(e -> {
+                try {
+                    UUID uuid = transaction.getUuid();
+                    String name = copyNameField.getText();
+                    LocalDate date = copyDatePicker.getValue();
+                    BigDecimal value = validateValue(copyValueField.getText().replace(",", "."));
+                    boolean isInstallment = copyIsInstallmentChoice.getValue().equals(YES);
+                    int remaining = isInstallment ? validateRemaining(copyRemainingInstallments.getText()) : 0;
+                    if (!isInstallment && !copyRemainingInstallments.getText().isEmpty() &&
+                            Integer.parseInt(copyRemainingInstallments.getText()) > 0) {
+                        throw new InvalidArgumentException(MSG_INVALID_INSTALLMENT_CONTENT);
+                    }
+
+                    validateField(name.isBlank(), MSG_INVALID_NAME_HEADER, MSG_INVALID_NAME_CONTENT);
+                    validateField(date == null, MSG_INVALID_DATE_HEADER, MSG_INVALID_DATE_CONTENT);
+
+                    CreateTransactionDto dto = new CreateTransactionDto(name, value, date, isInstallment, remaining);
+                    createTransactionUseCase.handle(dto);
+                    updateTransactionsDataTable();
+                    showAlert(MSG_SUCCESS, MSG_SUCCESS_COPY_HEADER, MSG_SUCCESS_COPY_CONTENT, Alert.AlertType.INFORMATION);
+                    stage.close();
+                } catch (Exception ex) {
+                    if (!(ex instanceof InvalidArgumentException)) {
+                        showAlert(MSG_ERROR, MSG_ERROR_COPY_HEADER, MSG_CONTENT_TRY_AGAIN, Alert.AlertType.ERROR);
+                    }
+                }
+            });
+
+            VBox vbox = new VBox(10,
+                    new Label(MSG_LABEL_NAME), copyNameField,
+                    new Label(MSG_LABEL_VALUE), copyValueField,
+                    new Label(MSG_LABEL_DATE), copyDatePicker,
+                    new Label(MSG_LABEL_INSTALLMENT), copyIsInstallmentChoice,
+                    new Label(MSG_LABEL_REMAINING), copyRemainingInstallments,
+                    copyButton
+            );
+            vbox.setPadding(new Insets(10));
+            stage.setScene(new Scene(vbox));
+            stage.sizeToScene();
+            stage.showAndWait();
+        } catch (Exception e) {
+            showAlert(MSG_ERROR, MSG_ERROR_OPEN_MODAL_HEADER, e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
 
     public void createTransaction() {
         try {
