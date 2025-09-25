@@ -39,57 +39,15 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+import static br.com.walletfx.presentation.enums.ErrorMessagesEnum.*;
+import static br.com.walletfx.presentation.enums.SuccessMessagesEnum.*;
+import static br.com.walletfx.presentation.enums.TextComponentesEnum.*;
+import static br.com.walletfx.presentation.enums.ValidationMessagesEnum.*;
+
 public class MainController implements Initializable {
 
-    private static final String MSG_SUCCESS = "Sucesso!";
-    private static final String MSG_SUCCESS_CREATE_HEADER = "Transação criada";
-    private static final String MSG_SUCCESS_CREATE_CONTENT = "A transação foi criada com sucesso.";
-    private static final String MSG_SUCCESS_UPDATE_HEADER = "Transação atualizada";
-    private static final String MSG_SUCCESS_COPY_HEADER = "Transação copiada";
-    private static final String MSG_SUCCESS_UPDATE_CONTENT = "A transação foi atualizada com sucesso.";
-    private static final String MSG_SUCCESS_COPY_CONTENT = "A transação foi copiada com sucesso.";
-    private static final String MSG_SUCCESS_DELETE_HEADER = "Transação excluída";
-    private static final String MSG_SUCCESS_DELETE_CONTENT = "A transação foi removida com sucesso.";
-    private static final String MSG_ERROR = "Erro";
-    private static final String MSG_HEADER_ERROR = "Ocorreu um erro inesperado";
-    private static final String MSG_CONTENT_TRY_AGAIN = "Por favor, verifique os dados e tente novamente.";
-    private static final String MSG_ERROR_OPEN_MODAL_HEADER = "Falha ao abrir o modal";
-    private static final String MSG_ERROR_UPDATE_HEADER = "Falha ao atualizar";
-    private static final String MSG_ERROR_COPY_HEADER = "Falha ao copiar";
-    private static final String MSG_ERROR_DELETE_HEADER = "Falha ao excluir";
-    private static final String MSG_DELETE_CONFIRM_TITLE = "Confirmar exclusão";
-    private static final String MSG_DELETE_CONFIRM_HEADER = "Deseja realmente excluir esta transação?";
-    private static final String MSG_DELETE_CONFIRM_CONTENT = "Transação: ";
-    private static final String MSG_INVALID_NAME_HEADER = "Nome inválido";
-    private static final String MSG_INVALID_NAME_CONTENT = "O campo Nome é obrigatório.";
-    private static final String MSG_INVALID_VALUE_HEADER = "Valor inválido";
-    private static final String MSG_INVALID_VALUE_CONTENT = "O campo Valor é obrigatório e deve ser numérico.";
-    private static final String MSG_INVALID_INSTALLMENT_HEADER = "Opção inválida";
-    private static final String MSG_INVALID_INSTALLMENT_CONTENT = "Informe a quantidade de parcelas restantes corretamente.";
-    private static final String MSG_INVALID_INSTALLMENT_QUANTITY = "Somente é possível informar parcelas restantes em compras parceladas.";
-    private static final String MSG_INVALID_INSTALLMENT_ZERO_CONTENT = "A quantidade de parcelas deve ser maior que zero.";
-    private static final String MSG_INVALID_DATE_HEADER = "Data inválida";
-    private static final String MSG_INVALID_DATE_CONTENT = "O campo Data é obrigatório.";
-    private static final String MSG_LABEL_NAME = "Nome:";
-    private static final String MSG_LABEL_VALUE = "Valor:";
-    private static final String MSG_LABEL_INSTALLMENT = "Parcelado?";
-    private static final String MSG_LABEL_REMAINING = "Parcelas restantes:";
-    private static final String MSG_LABEL_DATE = "Data:";
-    private static final String MSG_BUTTON_SAVE = "Salvar";
-    private static final String MSG_BUTTON_EDIT = "Editar";
-    private static final String MSG_BUTTON_DELETE = "Excluir";
-    private static final String MSG_BUTTON_COPY = "Copiar";
-    private static final String YES = "Sim";
-    private static final String NO = "Não";
-    private static final String TITLE_EDIT_TRANSACTION = "Editar Transação";
-    private static final String TITLE_COPY_TRANSACTION = "Copiar Transação";
-    private static final String MSG_TITLE_ERROR = "Ops";
-    private static final String MSG_CONTENT_DB_ERROR = "Verifique a conexão com o banco de dados.";
+
     private static final String DATE_PATTERN = "dd/MM/yyyy";
-    private static final String MSG_BALANCE_VALUE_ERROR = "O valor de receita deve ser maior que zero";
-    private static final String MSG_INVALID_BALANCE_VALUE = "O campo de receita deve ser um número válido";
-    private static final String MSG_INVALID_INITIAL_DATE_CONTENT = "O campo data inicial é obrigatório";
-    private static final String MSG_INVALID_FINAL_DATE_CONTENT = "O campo data final é obrigatório";
 
     @FXML public DatePicker dateValue;
     @FXML public Button btnFilterTransactions;
@@ -103,7 +61,7 @@ public class MainController implements Initializable {
     @FXML private TableColumn<Transaction, BigDecimal> columnValue;
     @FXML private TableColumn<Transaction, Boolean> columnIsInstallment;
     @FXML private TableColumn<Transaction, LocalDate> columnDate;
-    @FXML private TableColumn<Transaction, Integer> columnRemaningInstallment;
+    @FXML private TableColumn<Transaction, Integer> columnRemainingInstallment;
     @FXML private ChoiceBox<String> isInstallmentChoiceBox;
     @FXML private TextField nameField;
     @FXML private TextField remainingInstallments;
@@ -136,9 +94,9 @@ public class MainController implements Initializable {
             this.bindTotalToTextField();
             this.updateTransactionsDataTable();
         } catch (SQLException e) {
-            showAlert(MSG_TITLE_ERROR, MSG_HEADER_ERROR, MSG_CONTENT_DB_ERROR, Alert.AlertType.ERROR);
+            showAlert(MSG_TITLE_ERROR.getValue(), MSG_HEADER_ERROR.getValue(), MSG_CONTENT_DB_ERROR.getValue(), Alert.AlertType.ERROR);
         } catch (Exception e) {
-            showAlert(MSG_TITLE_ERROR, MSG_HEADER_ERROR, MSG_CONTENT_TRY_AGAIN, Alert.AlertType.ERROR);
+            showAlert(MSG_TITLE_ERROR.getValue(), MSG_HEADER_ERROR.getValue(), MSG_CONTENT_TRY_AGAIN.getValue(), Alert.AlertType.ERROR);
         }
     }
 
@@ -176,11 +134,11 @@ public class MainController implements Initializable {
             @Override
             protected void updateItem(Boolean item, boolean empty) {
                 super.updateItem(item, empty);
-                setText((empty || item == null) ? null : (item ? YES : NO));
+                setText((empty || item == null) ? null : (item ? YES.getValue() : NO.getValue()));
             }
         });
-        columnRemaningInstallment.setCellValueFactory(new PropertyValueFactory<>("remainingInstallments"));
-        columnRemaningInstallment.setCellFactory(col -> new TableCell<>() {
+        columnRemainingInstallment.setCellValueFactory(new PropertyValueFactory<>("remainingInstallments"));
+        columnRemainingInstallment.setCellFactory(col -> new TableCell<>() {
             @Override
             protected void updateItem(Integer item, boolean empty) {
                 super.updateItem(item, empty);
@@ -228,15 +186,15 @@ public class MainController implements Initializable {
     }
 
     private void prepareChoiceBox() {
-        isInstallmentChoiceBox.getItems().addAll(YES, NO);
-        isInstallmentChoiceBox.setValue(NO);
+        isInstallmentChoiceBox.getItems().addAll(YES.getValue(), NO.getValue());
+        isInstallmentChoiceBox.setValue(NO.getValue());
     }
 
     private void prepareActionsColumn() {
         columnActions.setCellFactory(col -> new TableCell<>() {
-            private final Button editButton = new Button(MSG_BUTTON_EDIT);
-            private final Button deleteButton = new Button(MSG_BUTTON_DELETE);
-            private final Button copyButton = new Button(MSG_BUTTON_COPY);
+            private final Button editButton = new Button(MSG_BUTTON_EDIT.getValue());
+            private final Button deleteButton = new Button(MSG_BUTTON_DELETE.getValue());
+            private final Button copyButton = new Button(MSG_BUTTON_COPY.getValue());
             private final HBox container = new HBox(5, editButton, deleteButton, copyButton);
 
             {
@@ -256,8 +214,8 @@ public class MainController implements Initializable {
 
     private void showDeleteConfirmation(Transaction transaction) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle(MSG_DELETE_CONFIRM_TITLE);
-        alert.setHeaderText(MSG_DELETE_CONFIRM_HEADER);
+        alert.setTitle(MSG_DELETE_CONFIRM_TITLE.getValue());
+        alert.setHeaderText(MSG_DELETE_CONFIRM_HEADER.getValue());
         alert.setContentText(MSG_DELETE_CONFIRM_CONTENT + transaction.getName());
 
         Stage alertStage = (Stage) alert.getDialogPane().getScene().getWindow();
@@ -277,16 +235,16 @@ public class MainController implements Initializable {
         try {
             deleteTransactionUseCase.handle(transaction.getUuid());
             updateTransactionsDataTable();
-            showAlert(MSG_SUCCESS, MSG_SUCCESS_DELETE_HEADER, MSG_SUCCESS_DELETE_CONTENT, Alert.AlertType.INFORMATION);
+            showAlert(MSG_SUCCESS.getValue(), MSG_SUCCESS_DELETE_HEADER.getValue(), MSG_SUCCESS_DELETE_CONTENT.getValue(), Alert.AlertType.INFORMATION);
         } catch (Exception e) {
-            showAlert(MSG_ERROR, MSG_ERROR_DELETE_HEADER, MSG_CONTENT_TRY_AGAIN, Alert.AlertType.ERROR);
+            showAlert(MSG_ERROR.getValue(), MSG_ERROR_DELETE_HEADER.getValue(), MSG_CONTENT_TRY_AGAIN.getValue(), Alert.AlertType.ERROR);
         }
     }
 
     private void openEditModal(Transaction transaction) {
         try {
             Stage stage = new Stage();
-            stage.setTitle(TITLE_EDIT_TRANSACTION);
+            stage.setTitle(TITLE_EDIT_TRANSACTION.getValue());
             stage.setMinWidth(400);
             Image icon = new Image(Objects.requireNonNull(
                     getClass().getResourceAsStream("/br/com/walletfx/icons/cifrao.png")
@@ -298,45 +256,45 @@ public class MainController implements Initializable {
             TextField editValueField = new TextField(transaction.getValue().toString());
             DatePicker editDatePicker = new DatePicker(transaction.getDate());
             ChoiceBox<String> editIsInstallmentChoice = new ChoiceBox<>();
-            editIsInstallmentChoice.getItems().addAll(YES, NO);
-            editIsInstallmentChoice.setValue(transaction.isInstallments() ? YES : NO);
+            editIsInstallmentChoice.getItems().addAll(YES.getValue(), NO.getValue());
+            editIsInstallmentChoice.setValue(transaction.isInstallments() ? YES.getValue() : NO.getValue());
             TextField editRemainingInstallments = new TextField(String.valueOf(transaction.getRemainingInstallments()));
 
-            Button saveButton = new Button(MSG_BUTTON_SAVE);
+            Button saveButton = new Button(MSG_BUTTON_SAVE.getValue());
             saveButton.setOnAction(e -> {
                 try {
                     UUID uuid = transaction.getUuid();
                     String name = editNameField.getText();
                     LocalDate date = editDatePicker.getValue();
                     BigDecimal value = validateValue(editValueField.getText().replace(",", "."));
-                    boolean isInstallment = editIsInstallmentChoice.getValue().equals(YES);
+                    boolean isInstallment = editIsInstallmentChoice.getValue().equals(YES.getValue());
                     int remaining = isInstallment ? validateRemaining(editRemainingInstallments.getText()) : 0;
                     if (!isInstallment && !editRemainingInstallments.getText().isEmpty() &&
                             Integer.parseInt(editRemainingInstallments.getText()) > 0) {
-                        throw new InvalidArgumentException(MSG_INVALID_INSTALLMENT_CONTENT);
+                        throw new InvalidArgumentException(MSG_INVALID_INSTALLMENT_CONTENT.getValue());
                     }
 
-                    validateField(name.isBlank(), MSG_INVALID_NAME_HEADER, MSG_INVALID_NAME_CONTENT);
-                    validateField(date == null, MSG_INVALID_DATE_HEADER, MSG_INVALID_DATE_CONTENT);
+                    validateField(name.isBlank(), MSG_INVALID_NAME_CONTENT.getValue());
+                    validateField(date == null, MSG_INVALID_DATE_CONTENT.getValue());
 
                     UpdateTransactionDto dto = new UpdateTransactionDto(uuid, name, value, date, isInstallment, remaining);
                     updateTransactionUseCase.handle(dto);
                     updateTransactionsDataTable();
-                    showAlert(MSG_SUCCESS, MSG_SUCCESS_UPDATE_HEADER, MSG_SUCCESS_UPDATE_CONTENT, Alert.AlertType.INFORMATION);
+                    showAlert(MSG_SUCCESS.getValue(), MSG_SUCCESS_UPDATE_HEADER.getValue(), MSG_SUCCESS_UPDATE_CONTENT.getValue(), Alert.AlertType.INFORMATION);
                     stage.close();
                 } catch (Exception ex) {
                     if (!(ex instanceof InvalidArgumentException)) {
-                        showAlert(MSG_ERROR, MSG_ERROR_UPDATE_HEADER, MSG_CONTENT_TRY_AGAIN, Alert.AlertType.ERROR);
+                        showAlert(MSG_ERROR.getValue(), MSG_ERROR_UPDATE_HEADER.getValue(), MSG_CONTENT_TRY_AGAIN.getValue(), Alert.AlertType.ERROR);
                     }
                 }
             });
 
             VBox vbox = new VBox(10,
-                    new Label(MSG_LABEL_NAME), editNameField,
-                    new Label(MSG_LABEL_VALUE), editValueField,
-                    new Label(MSG_LABEL_DATE), editDatePicker,
-                    new Label(MSG_LABEL_INSTALLMENT), editIsInstallmentChoice,
-                    new Label(MSG_LABEL_REMAINING), editRemainingInstallments,
+                    new Label(MSG_LABEL_NAME.getValue()), editNameField,
+                    new Label(MSG_LABEL_VALUE.getValue()), editValueField,
+                    new Label(MSG_LABEL_DATE.getValue()), editDatePicker,
+                    new Label(MSG_LABEL_INSTALLMENT.getValue()), editIsInstallmentChoice,
+                    new Label(MSG_LABEL_REMAINING.getValue()), editRemainingInstallments,
                     saveButton
             );
             vbox.setPadding(new Insets(10));
@@ -344,7 +302,7 @@ public class MainController implements Initializable {
             stage.sizeToScene();
             stage.showAndWait();
         } catch (Exception e) {
-            showAlert(MSG_ERROR, MSG_ERROR_OPEN_MODAL_HEADER, e.getMessage(), Alert.AlertType.ERROR);
+            showAlert(MSG_ERROR.getValue(), MSG_ERROR_OPEN_MODAL_HEADER.getValue(), e.getMessage(), Alert.AlertType.ERROR);
         }
     }
 
@@ -352,7 +310,7 @@ public class MainController implements Initializable {
     private void openCopyModal(Transaction transaction) {
         try {
             Stage stage = new Stage();
-            stage.setTitle(TITLE_COPY_TRANSACTION);
+            stage.setTitle(TITLE_COPY_TRANSACTION.getValue());
             stage.setMinWidth(400);
             Image icon = new Image(Objects.requireNonNull(
                     getClass().getResourceAsStream("/br/com/walletfx/icons/cifrao.png")
@@ -364,45 +322,44 @@ public class MainController implements Initializable {
             TextField copyValueField = new TextField(transaction.getValue().toString());
             DatePicker copyDatePicker = new DatePicker(transaction.getDate());
             ChoiceBox<String> copyIsInstallmentChoice = new ChoiceBox<>();
-            copyIsInstallmentChoice.getItems().addAll(YES, NO);
-            copyIsInstallmentChoice.setValue(transaction.isInstallments() ? YES : NO);
+            copyIsInstallmentChoice.getItems().addAll(YES.getValue(), NO.getValue());
+            copyIsInstallmentChoice.setValue(transaction.isInstallments() ? YES.getValue() : NO.getValue());
             TextField copyRemainingInstallments = new TextField(String.valueOf(transaction.getRemainingInstallments()));
 
-            Button copyButton = new Button(MSG_BUTTON_COPY);
+            Button copyButton = new Button(MSG_BUTTON_COPY.getValue());
             copyButton.setOnAction(e -> {
                 try {
-                    UUID uuid = transaction.getUuid();
                     String name = copyNameField.getText();
                     LocalDate date = copyDatePicker.getValue();
                     BigDecimal value = validateValue(copyValueField.getText().replace(",", "."));
-                    boolean isInstallment = copyIsInstallmentChoice.getValue().equals(YES);
+                    boolean isInstallment = copyIsInstallmentChoice.getValue().equals(YES.getValue());
                     int remaining = isInstallment ? validateRemaining(copyRemainingInstallments.getText()) : 0;
                     if (!isInstallment && !copyRemainingInstallments.getText().isEmpty() &&
                             Integer.parseInt(copyRemainingInstallments.getText()) > 0) {
-                        throw new InvalidArgumentException(MSG_INVALID_INSTALLMENT_CONTENT);
+                        throw new InvalidArgumentException(MSG_INVALID_INSTALLMENT_CONTENT.getValue());
                     }
 
-                    validateField(name.isBlank(), MSG_INVALID_NAME_HEADER, MSG_INVALID_NAME_CONTENT);
-                    validateField(date == null, MSG_INVALID_DATE_HEADER, MSG_INVALID_DATE_CONTENT);
+                    validateField(name.isBlank(), MSG_INVALID_NAME_CONTENT.getValue());
+                    validateField(date == null, MSG_INVALID_DATE_CONTENT.getValue());
 
                     CreateTransactionDto dto = new CreateTransactionDto(name, value, date, isInstallment, remaining);
                     createTransactionUseCase.handle(dto);
                     updateTransactionsDataTable();
-                    showAlert(MSG_SUCCESS, MSG_SUCCESS_COPY_HEADER, MSG_SUCCESS_COPY_CONTENT, Alert.AlertType.INFORMATION);
+                    showAlert(MSG_SUCCESS.getValue(), MSG_SUCCESS_COPY_HEADER.getValue(), MSG_SUCCESS_COPY_CONTENT.getValue(), Alert.AlertType.INFORMATION);
                     stage.close();
                 } catch (Exception ex) {
                     if (!(ex instanceof InvalidArgumentException)) {
-                        showAlert(MSG_ERROR, MSG_ERROR_COPY_HEADER, MSG_CONTENT_TRY_AGAIN, Alert.AlertType.ERROR);
+                        showAlert(MSG_ERROR.getValue(), MSG_ERROR_COPY_HEADER.getValue(), MSG_CONTENT_TRY_AGAIN.getValue(), Alert.AlertType.ERROR);
                     }
                 }
             });
 
             VBox vbox = new VBox(10,
-                    new Label(MSG_LABEL_NAME), copyNameField,
-                    new Label(MSG_LABEL_VALUE), copyValueField,
-                    new Label(MSG_LABEL_DATE), copyDatePicker,
-                    new Label(MSG_LABEL_INSTALLMENT), copyIsInstallmentChoice,
-                    new Label(MSG_LABEL_REMAINING), copyRemainingInstallments,
+                    new Label(MSG_LABEL_NAME.getValue()), copyNameField,
+                    new Label(MSG_LABEL_VALUE.getValue()), copyValueField,
+                    new Label(MSG_LABEL_DATE.getValue()), copyDatePicker,
+                    new Label(MSG_LABEL_INSTALLMENT.getValue()), copyIsInstallmentChoice,
+                    new Label(MSG_LABEL_REMAINING.getValue()), copyRemainingInstallments,
                     copyButton
             );
             vbox.setPadding(new Insets(10));
@@ -410,7 +367,7 @@ public class MainController implements Initializable {
             stage.sizeToScene();
             stage.showAndWait();
         } catch (Exception e) {
-            showAlert(MSG_ERROR, MSG_ERROR_OPEN_MODAL_HEADER, e.getMessage(), Alert.AlertType.ERROR);
+            showAlert(MSG_ERROR.getValue(), MSG_ERROR_OPEN_MODAL_HEADER.getValue(), e.getMessage(), Alert.AlertType.ERROR);
         }
     }
 
@@ -419,44 +376,44 @@ public class MainController implements Initializable {
         try {
             String name = nameField.getText();
             String valueTextString = valueField.getText().replace(",", ".");
-            boolean isInstallment = isInstallmentChoiceBox.getValue().equals(YES);
+            boolean isInstallment = isInstallmentChoiceBox.getValue().equals(YES.getValue());
             String remainingTextString = remainingInstallments.getText();
             LocalDate date = dateValue.getValue();
 
-            validateField(name.isBlank(), MSG_INVALID_NAME_HEADER, MSG_INVALID_NAME_CONTENT);
-            validateField(valueTextString.isEmpty(), MSG_INVALID_VALUE_HEADER, MSG_INVALID_VALUE_CONTENT);
-            validateField(isInstallment && remainingTextString.isBlank(), MSG_INVALID_INSTALLMENT_HEADER, MSG_INVALID_INSTALLMENT_CONTENT);
-            validateField(date == null, MSG_INVALID_DATE_HEADER, MSG_INVALID_DATE_CONTENT);
+            validateField(name.isBlank(), MSG_INVALID_NAME_CONTENT.getValue());
+            validateField(valueTextString.isEmpty(), MSG_INVALID_VALUE_CONTENT.getValue());
+            validateField(isInstallment && remainingTextString.isBlank(), MSG_INVALID_INSTALLMENT_CONTENT.getValue());
+            validateField(date == null, MSG_INVALID_DATE_CONTENT.getValue());
 
             BigDecimal value = validateValue(valueTextString);
             int remaining = isInstallment ? validateRemaining(remainingTextString) : 0;
             if (!isInstallment && !remainingTextString.isEmpty()) {
-                throw new InvalidArgumentException(MSG_INVALID_INSTALLMENT_QUANTITY);
+                throw new InvalidArgumentException(MSG_INVALID_INSTALLMENT_QUANTITY.getValue());
             }
 
             CreateTransactionDto dto = new CreateTransactionDto(name, value, date, isInstallment, remaining);
             createTransactionUseCase.handle(dto);
             updateTransactionsDataTable();
-            showAlert(MSG_SUCCESS, MSG_SUCCESS_CREATE_HEADER, MSG_SUCCESS_CREATE_CONTENT, Alert.AlertType.INFORMATION);
+            showAlert(MSG_SUCCESS.getValue(), MSG_SUCCESS_CREATE_HEADER.getValue(), MSG_SUCCESS_CREATE_CONTENT.getValue(), Alert.AlertType.INFORMATION);
             nameField.setText("");
             valueField.setText("");
-            isInstallmentChoiceBox.setValue(NO);
+            isInstallmentChoiceBox.setValue(NO.getValue());
             remainingInstallments.setText("");
             dateValue.setValue(null);
         } catch (InvalidArgumentException e) {
-            showAlert(MSG_ERROR, MSG_TITLE_ERROR, e.getMessage(), Alert.AlertType.ERROR);
+            showAlert(MSG_ERROR.getValue(), MSG_TITLE_ERROR.getValue(), e.getMessage(), Alert.AlertType.ERROR);
         }catch (Exception e) {
-            showAlert(MSG_ERROR, MSG_HEADER_ERROR, MSG_CONTENT_TRY_AGAIN, Alert.AlertType.ERROR);
+            showAlert(MSG_ERROR.getValue(), MSG_HEADER_ERROR.getValue(), MSG_CONTENT_TRY_AGAIN.getValue(), Alert.AlertType.ERROR);
         }
     }
 
     private int validateRemaining(String remainingTextString) {
         try {
             int remaining = Integer.parseInt(remainingTextString);
-            if (remaining <= 0) throw new InvalidArgumentException(MSG_INVALID_INSTALLMENT_ZERO_CONTENT);
+            if (remaining <= 0) throw new InvalidArgumentException(MSG_INVALID_INSTALLMENT_ZERO_CONTENT.getValue());
             return remaining;
         } catch (NumberFormatException e) {
-            throw new InvalidArgumentException(MSG_INVALID_INSTALLMENT_CONTENT);
+            throw new InvalidArgumentException(MSG_INVALID_INSTALLMENT_CONTENT.getValue());
         }
     }
 
@@ -464,11 +421,11 @@ public class MainController implements Initializable {
         try {
             return new BigDecimal(valueTextString);
         } catch (Exception e) {
-            throw new InvalidArgumentException(MSG_INVALID_VALUE_CONTENT);
+            throw new InvalidArgumentException(MSG_INVALID_VALUE_CONTENT.getValue());
         }
     }
 
-    private void validateField(boolean condition, String header, String content) {
+    private void validateField(boolean condition, String content) {
         if (condition) throw new InvalidArgumentException(content);
     }
 
@@ -516,20 +473,20 @@ public class MainController implements Initializable {
         try {
             String budgetInput = budgetValue.getText().replace(",", ".");
             BigDecimal budgetAmount = new BigDecimal(budgetInput.isBlank() ? "0" : budgetInput);
-            validateField(budgetAmount.compareTo(BigDecimal.ZERO) <= 0, MSG_TITLE_ERROR, MSG_BALANCE_VALUE_ERROR);
+            validateField(budgetAmount.compareTo(BigDecimal.ZERO) <= 0, MSG_BALANCE_VALUE_ERROR.getValue());
             BigDecimal finalAmount = budgetAmount.subtract(totalInPeriod.get());
             finalAmountText.setText("R$ " + finalAmount.setScale(2, RoundingMode.HALF_UP).toString().replace(".", ","));
         } catch (NumberFormatException e) {
-            showAlert(MSG_ERROR, MSG_TITLE_ERROR, MSG_INVALID_BALANCE_VALUE, Alert.AlertType.ERROR);
+            showAlert(MSG_ERROR.getValue(), MSG_TITLE_ERROR.getValue(), MSG_INVALID_BALANCE_VALUE.getValue(), Alert.AlertType.ERROR);
         } catch (InvalidArgumentException e) {
-            showAlert(MSG_ERROR, MSG_TITLE_ERROR, e.getMessage(), Alert.AlertType.ERROR);
+            showAlert(MSG_ERROR.getValue(), MSG_TITLE_ERROR.getValue(), e.getMessage(), Alert.AlertType.ERROR);
         }
     }
 
     public void getTransactionsBetween()  {
         try {
-            validateField(initialDate.getValue() == null, MSG_INVALID_DATE_HEADER, MSG_INVALID_INITIAL_DATE_CONTENT);
-            validateField(finalDate.getValue() == null, MSG_INVALID_DATE_HEADER, MSG_INVALID_FINAL_DATE_CONTENT);
+            validateField(initialDate.getValue() == null, MSG_INVALID_INITIAL_DATE_CONTENT.getValue());
+            validateField(finalDate.getValue() == null, MSG_INVALID_FINAL_DATE_CONTENT.getValue());
 
             GetAllInIntervalDto dto = new GetAllInIntervalDto(initialDate.getValue(), finalDate.getValue());
             List<Transaction> transactionList = this.getAllInIntervalUseCase.handle(dto);
@@ -540,11 +497,11 @@ public class MainController implements Initializable {
                 this.calculateFinalAmount();
             }
         } catch (NumberFormatException e) {
-            showAlert(MSG_ERROR, MSG_TITLE_ERROR, MSG_INVALID_BALANCE_VALUE, Alert.AlertType.ERROR);
+            showAlert(MSG_ERROR.getValue(), MSG_TITLE_ERROR.getValue(), MSG_INVALID_BALANCE_VALUE.getValue(), Alert.AlertType.ERROR);
         } catch (InvalidArgumentException e) {
-            showAlert(MSG_ERROR, MSG_TITLE_ERROR, e.getMessage(), Alert.AlertType.ERROR);
+            showAlert(MSG_ERROR.getValue(), MSG_TITLE_ERROR.getValue(), e.getMessage(), Alert.AlertType.ERROR);
         }catch (Exception e) {
-            showAlert(MSG_ERROR, MSG_HEADER_ERROR, MSG_CONTENT_TRY_AGAIN, Alert.AlertType.ERROR);
+            showAlert(MSG_ERROR.getValue(), MSG_HEADER_ERROR.getValue(), MSG_CONTENT_TRY_AGAIN.getValue(), Alert.AlertType.ERROR);
         }
 
     }
